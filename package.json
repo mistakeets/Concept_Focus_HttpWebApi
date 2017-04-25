@@ -1,0 +1,26 @@
+{
+  "name": "conceptplaylist",
+  "version": "1.0.0",
+  "description": "youtube playlist app",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mistakeets/Concept_Focus_HttpWebApi.git"
+  },
+  "author": "Jose Chavez and Keith Oppel",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mistakeets/Concept_Focus_HttpWebApi/issues"
+  },
+  "homepage": "https://github.com/mistakeets/Concept_Focus_HttpWebApi#readme",
+  "dependencies": {
+    "body-parser": "^1.17.1",
+    "cookie-parser": "^1.4.3",
+    "express": "^4.15.2",
+    "pgpromise": "^0.1.1",
+    "pug": "^2.0.0-beta.12"
+  }
+}
