@@ -4,6 +4,7 @@
   "description": "youtube playlist app",
   "main": "index.js",
   "scripts": {
+    "start": "node app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -18,7 +19,6 @@
   "homepage": "https://github.com/mistakeets/Concept_Focus_HttpWebApi#readme",
   "dependencies": {
     "body-parser": "^1.17.1",
-    "connect-redis": "^3.2.0",
     "cookie-parser": "^1.4.3",
     "cookie-session": "^2.0.0-beta.1",
     "express": "^4.15.2",
