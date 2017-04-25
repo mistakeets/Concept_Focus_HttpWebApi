@@ -18,7 +18,7 @@ const index = require('./index')
 const app = express()
 
 passport.serializeUser((user, done) => {
-  done(null, user.id)
+  done(null, user)
 })
 
 passport.deserializeUser((obj, done) => {
@@ -27,16 +27,16 @@ passport.deserializeUser((obj, done) => {
 
 
 passport.use(new GoogleStrategy({
-    clientID: google_client_id,
-    clientSecret: google_client_secret,
-    callbackURL: google_callback_url,
-    passReqToCallback: true
-  }, (request, accessToken, refreshToken, profile, done) => {
-    process.nextTick(() => {
-      return done(null, profile)
-    })
-  }
-))
+  clientID: google_client_id,
+  clientSecret: google_client_secret,
+  callbackURL: google_callback_url,
+  passReqToCallback: true
+}, (request, accessToken, refreshToken, profile, done) => {
+  process.nextTick(() => {
+    let user = { accessToken: accessToken, userID: profile.id }
+    return done(null, user)
+  })
+}))
 
 app.set('view engine', 'pug')
 app.set('views', './views')
@@ -60,10 +60,9 @@ app.use(passport.session())
 
 
 app.get('/', (req, res) => {
-  if(req.isAuthenticated()) {
-    res.send("User is authenticated!!" + req.session.passport.user)
-  }
-  else {
+  if (req.isAuthenticated()) {
+    res.send("User is authenticated!!" + JSON.stringify(req.session.passport.user))
+  } else {
     res.send("User is not logged in :(")
   }
 })
