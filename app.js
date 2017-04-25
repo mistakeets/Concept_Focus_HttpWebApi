@@ -5,7 +5,6 @@ const passport = require('passport')
 const util = require('util')
 
 const session = require('express-session')
-const RedisStore = require('connect-redis')(session)
 
 const GoogleStrategy = require('passport-google-oauth2').Strategy;
 
@@ -19,14 +18,13 @@ const index = require('./index')
 const app = express()
 
 passport.serializeUser((user, done) => {
-  done(null, user)
+  done(null, user.id)
 })
 
 passport.deserializeUser((obj, done) => {
   done(null, obj)
 })
 
-let user = {};
 
 passport.use(new GoogleStrategy({
     clientID: google_client_id,
@@ -35,8 +33,6 @@ passport.use(new GoogleStrategy({
     passReqToCallback: true
   }, (request, accessToken, refreshToken, profile, done) => {
     process.nextTick(() => {
-      user = profile;
-      user.accessToken = accessToken;
       return done(null, profile)
     })
   }
@@ -53,10 +49,6 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.use(session({
   secret: 'cookie_secret',
   name: 'conceptplayer',
-  store: new RedisStore({
-    host: '127.0.0.1',
-    port: 6379
-  }),
   proxy: true,
   resave: true,
   saveUninitialized: true
@@ -65,8 +57,15 @@ app.use(session({
 app.use(passport.initialize())
 app.use(passport.session())
 
+
+
 app.get('/', (req, res) => {
-  console.log(req.user)
+  if(req.isAuthenticated()) {
+    res.send("User is authenticated!!" + req.session.passport.user)
+  }
+  else {
+    res.send("User is not logged in :(")
+  }
 })
 
 app.get('/login', (req, res) => {
