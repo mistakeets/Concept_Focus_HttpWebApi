@@ -6,6 +6,8 @@ const util = require('util')
 const request = require('request')
 const pug = require('pug')
 
+const fetch = require('./fetchPlaylist.js')
+
 const session = require('express-session')
 
 const GoogleStrategy = require('passport-google-oauth2').Strategy;
@@ -15,8 +17,6 @@ const port = process.env.PORT || 3000
 const google_client_id = '136034564686-g6jvbs2dih9op1jqvs8273f60gg0vp8h.apps.googleusercontent.com'
 const google_client_secret = '7GG4_H7pTDxcXp-IwpGkOyt0'
 const google_callback_url = 'http://127.0.0.1:3000/auth/google/callback'
-const playlistApiUrl = 'https://www.googleapis.com/youtube/v3/playlists'
-const playlistItemUrl = 'https://www.googleapis.com/youtube/v3/playlistItems'
 
 const index = require('./index')
 const app = express()
@@ -65,11 +65,12 @@ app.get('/', (req, res) => {
   let buttonText = ''
   let button = ''
 
+
   if (req.isAuthenticated()) {
     buttonText = 'Logout'
     button = '/logout'
   } else {
-    buttonText = 'Login with Youtube'
+    buttonText = 'Login'
     button = '/login'
   }
 
@@ -101,7 +102,7 @@ app.get('/logout', (req, res) => {
   res.redirect('/')
 })
 
-//TODO: auth user for these get playlist methods
+const playlistApiUrl = 'https://www.googleapis.com/youtube/v3/playlists'
 
 app.get('/getAllPlaylists', (req, res) => {
   let url = "?part=snippet&mine=true&access_token=" +
@@ -114,16 +115,21 @@ app.get('/getAllPlaylists', (req, res) => {
 })
 
 app.get('/getSinglePlaylist', (req, res) => {
-  let playlistId = req.query.playlistId
-  let url = "?part=snippet&playlistId=" + playlistId + "&access_token=" +
-    req.session.passport.user.accessToken
-  request.get(playlistItemUrl + url)
-    .on('response', (response) => {
-      res.set('Content-Type', 'application/json')
-      res.status(200).send(response)
+  if(Object.keys(req.query).length === 0) {
+    res.status(400)
+      .send('Bad Request: Playlist ID required.')
+  }
+  else {
+    let playlistId = req.query.playlistId
+    let apiUrl = 'https://www.googleapis.com/youtube/v3/playlistItems'
+    let url = apiUrl + "?part=snippet&playlistId=" + playlistId +
+      '&key=AIzaSyDuS3cbDdZ2Jrv2koZaEftyxD6aHcPNUss&maxResults=50'
+    request.get(url, (error, response) => {
+        res.set('Content-Type', 'application/json')
+        res.status(200).send(response.body)
     })
+  }
 })
-
 
 app.listen(port, () => {
   console.log('Listening on port ' + port)

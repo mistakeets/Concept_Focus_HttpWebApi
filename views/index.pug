@@ -12,14 +12,8 @@ block content
               button.btn.btn-primary.btn-sm Load
               | &nbsp
               button.btn.btn-primary.btn-sm Save
-          .card-block
-            ul.list-group 
-              li.list-group-item Item 1
-              li.list-group-item Item 2
-              li.list-group-item Item 3
-              li.list-group-item Item 4
-              li.list-group-item Item 5
-              li.list-group-item Item 6
+          .card-block.playlist-block
+            ul.list-group.playlist
       .col-md-7
         .card
           .card-block.text-center
@@ -28,5 +22,6 @@ block content
         .card
           .card-block
             a.btn.btn-block.btn-danger(href= loginLogout)
-              | #{loginLogoutButton}
+              i.fa.fa-youtube.fa-2x &nbsp&nbsp
+              | #{loginLogoutButton} 
     

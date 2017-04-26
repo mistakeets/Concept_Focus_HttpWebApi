@@ -5,3 +5,8 @@
 .container-fluid {
   margin-top: 1em;
 }
+
+.playlist-block {
+  height: 60%;
+  overflow: scroll;
+}
