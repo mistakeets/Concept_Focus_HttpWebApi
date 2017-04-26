@@ -62,13 +62,22 @@ app.use(passport.initialize())
 app.use(passport.session())
 
 app.get('/', (req, res) => {
+  let buttonText = ''
+  let button = ''
+
   if (req.isAuthenticated()) {
-    res.send("User is authenticated!!" + JSON.stringify(req.session.passport.user))
+    buttonText = 'Logout'
+    button = '/logout'
   } else {
-    res.render('index', {
-      title: 'Concept Player'
-    })
+    buttonText = 'Login with Youtube'
+    button = '/login'
   }
+
+  res.render('index', {
+    title: 'Concept Player',
+    loginLogoutButton: buttonText,
+    loginLogout: button
+  })
 })
 
 app.get('/login', (req, res) => {
