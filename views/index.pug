@@ -1,3 +1,32 @@
 extends layout
 
 block content
+
+  .container-fluid
+    .row
+      .col-md-3
+        .card
+          div.card-header
+            h3 Playlist 
+            div.d-flex.justify-content-start
+              button.btn.btn-primary.btn-sm Load
+              | &nbsp
+              button.btn.btn-primary.btn-sm Save
+          .card-block
+            ul.list-group 
+              li.list-group-item Item 1
+              li.list-group-item Item 2
+              li.list-group-item Item 3
+              li.list-group-item Item 4
+              li.list-group-item Item 5
+              li.list-group-item Item 6
+      .col-md-7
+        .card
+          .card-block.text-center
+            img.img-fluid(src='http://placehold.it/640x385')      
+      .col-md-2
+        .card
+          .card-block
+            button.btn.btn-block.btn-danger
+              | Login with YouTube
+    

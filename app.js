@@ -4,6 +4,7 @@ const cookieParser = require('cookie-parser')
 const passport = require('passport')
 const util = require('util')
 const request = require('request')
+const pug = require('pug')
 
 const session = require('express-session')
 
@@ -42,7 +43,7 @@ passport.use(new GoogleStrategy({
 }))
 
 app.set('view engine', 'pug')
-app.set('views', './views')
+app.set('views', 'views')
 app.set('port', port)
 
 app.use(express.static('./public'))
@@ -60,13 +61,13 @@ app.use(session({
 app.use(passport.initialize())
 app.use(passport.session())
 
-
-
 app.get('/', (req, res) => {
   if (req.isAuthenticated()) {
     res.send("User is authenticated!!" + JSON.stringify(req.session.passport.user))
   } else {
-    res.send("User is not logged in :(")
+    res.render('index', {
+      title: 'Concept Player'
+    })
   }
 })
 
