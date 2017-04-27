@@ -6,8 +6,6 @@ const util = require('util')
 const request = require('request')
 const pug = require('pug')
 
-const fetch = require('./fetchPlaylist.js')
-
 const session = require('express-session')
 
 const GoogleStrategy = require('passport-google-oauth2').Strategy;
@@ -115,18 +113,17 @@ app.get('/getAllPlaylists', (req, res) => {
 })
 
 app.get('/getSinglePlaylist', (req, res) => {
-  if(Object.keys(req.query).length === 0) {
+  if (Object.keys(req.query).length === 0) {
     res.status(400)
       .send('Bad Request: Playlist ID required.')
-  }
-  else {
+  } else {
     let playlistId = req.query.playlistId
     let apiUrl = 'https://www.googleapis.com/youtube/v3/playlistItems'
     let url = apiUrl + "?part=snippet&playlistId=" + playlistId +
       '&key=AIzaSyDuS3cbDdZ2Jrv2koZaEftyxD6aHcPNUss&maxResults=50'
     request.get(url, (error, response) => {
-        res.set('Content-Type', 'application/json')
-        res.status(200).send(response.body)
+      res.set('Content-Type', 'application/json')
+      res.status(200).send(response.body)
     })
   }
 })
