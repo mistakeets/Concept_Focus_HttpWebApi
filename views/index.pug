@@ -7,7 +7,11 @@ block content
       .col-md-3
         .card
           div.card-header
-            h3 Playlist 
+            h3
+              span.playlist-title Playlist 
+              | &nbsp 
+              if isLoggedin 
+                i.fa.fa-pencil-square-o.edit
             div.d-flex.justify-content-end
               div.btn-group
                 button.btn.btn-primary.btn-sm.dropdown-toggle(data-toggle= 'dropdown',

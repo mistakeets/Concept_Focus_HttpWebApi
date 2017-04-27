@@ -119,21 +119,20 @@ app.get('/search', (req, res) => {
 })
 
 app.post('/createPlaylist', (req, res) => {
-
   if (req.isAuthenticated()) {
     let title = req.query.title
     let url = 'https://www.googleapis.com/youtube/v3/playlists'
     url += '?part=snippet&access_token='
     url += req.session.passport.user.accessToken
-    let post = {
+    let body = {
       "json": {
         "snippet": {
           "title": title
         }
       }
     }
-    request.post(url, post, (error, response) => {
-      res.status(200)
+    request.post(url, body, (error, response) => {
+      res.status(201)
       res.set('Content-Type', 'application/json')
       res.send(response.body)
     })
@@ -156,6 +155,31 @@ app.delete('/deletePlaylist', (req, res) => {
   } else {
     res.status(401)
     res.send('Request requires authentication. Please <a href="login">login.</a>')
+  }
+})
+
+app.put('/updatePlaylistName', (req, res) => {
+  if (req.isAuthenticated()) {
+    let id = req.query.id
+    let title = req.query.title
+    let url = 'https://www.googleapis.com/youtube/v3/playlists'
+    url += '?part=snippet&access_token='
+    url += req.session.passport.user.accessToken
+    let body = {
+      "json": {
+        "id": id,
+        "snippet": {
+          "title": title
+        }
+      }
+    }
+    request.put(url, body, (error, response) => {
+      res.status(response.statusCode)
+      res.send(response)
+    })
+  } else {
+    res.status(401)
+      .send('Request requires authentication. Please <a href="login">login.</a>')
   }
 })
 

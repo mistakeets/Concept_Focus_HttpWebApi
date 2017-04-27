@@ -28,7 +28,7 @@ let createPlaylist = function() {
       return response.json()
     })
     .then((response) => {
-      populatePlaylist(response.id)
+      populatePlaylist(response.id, response.snippet.title)
       populateAllPlaylists()
     })
 }
@@ -44,10 +44,26 @@ let deletePlaylist = function(id) {
       })
       .then((response) => {
         populateAllPlaylists()
-        populatePlaylist('PLyATlhF4kiF01VXBmdOFabxrvMkJUwxLU')
+        populatePlaylist('PLyATlhF4kiF01VXBmdOFabxrvMkJUwxLU', 'Playlist')
       })
       .catch(console.log)
   }
+}
+
+let updatePlaylistName = function(id) {
+  let newTitle = prompt('Enter new playlist name')
+  fetch('updatePlaylistName?id=' + id + '&title=' + newTitle, {
+      method: 'PUT',
+      credentials: 'include'
+    })
+    .then((response) => {
+      return response.json()
+    })
+    .then((response) => {
+      $('.playlist-title').html(newTitle)
+      populateAllPlaylists()
+    })
+    .catch(console.log)
 }
 
 let getSearchResults = function(query, callback) {
@@ -103,7 +119,7 @@ let populateAllPlaylists = function() {
       let html = ''
       html += '<a href="#" class="dropdown-item" onclick="populatePlaylist(\''
       html += item.id
-      html += '\')">'
+      html += '\', \'' + item.snippet.title + '\')">'
       html += item.snippet.title
       html += '</a>'
       $('.list-of-playlists').append(html)
@@ -130,7 +146,7 @@ let getPlaylist = function(playlistId, callback) {
     .then(callback)
     .catch(console.log)
 }
-let populatePlaylist = function(playlistId) {
+let populatePlaylist = function(playlistId, title) {
   getPlaylist(playlistId, (response) => {
     if (response.items.length > 0)
       playVideo(response.items[0].snippet.resourceId.videoId)
@@ -141,6 +157,11 @@ let populatePlaylist = function(playlistId) {
         ' onclick="playVideo(\'' + item.snippet.resourceId.videoId +
         '\')">' + item.snippet.title + '</a></li>')
     }
+    $('.playlist-title').html(title)
+
+    $('.edit').attr('onclick', 'updatePlaylistName("' +
+      playlistId + '")')
+
     $('.delete-button').attr('onclick', 'deletePlaylist("' +
       playlistId + '")')
   })
