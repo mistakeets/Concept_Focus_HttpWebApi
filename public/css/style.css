@@ -6,7 +6,15 @@
   margin-top: 1em;
 }
 
-.playlist-block {
-  height: 65%;
+.playlist-block, .search-results {
+  height: 75%;
   overflow: scroll;
+}
+
+.card {
+  margin-bottom: .25em;
+}
+
+.search-item:hover {
+  background-color: #7db8db;
 }
