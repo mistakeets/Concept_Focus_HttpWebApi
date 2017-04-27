@@ -1,6 +1,54 @@
 # Concept Focus: HTTP & Web APIs
 (Project team ugly-plover)
 
+To demonstrate an HTTP request-response cycle and web API interaction, our team created a video app that utilizes the YouTube API.
+The web application has an embedded YouTube video player window, and the user has the ability to load playlists from their YouTube account.
+The user also has the ability to create a new YouTube playlist and save the playlist to their Youtube account. 
+
+In order for the user to access their playlists, Passport.js / Google OAuth2 is being used to handle the authentication process/token creation so the user can 
+login to their Youtube account (which then grants the application permission to interact with the user's account). An Express server process
+is used to interact with the API / handle routes and HTTP Requests/Responses. 
+
+In order for the user to create new playlists, our app also has a search feature so that the user can search YouTube for videos and add them to a new playlist. 
+Using the Google/YouTube API, the newly created playlist is then sent back to YouTube, and the playlist is saved in the user's YouTube account. 
+
+## Examples of HTTP verb usage
+
+POST https://www.googleapis.com/youtube/v3/playlists?part=snippet&access_token=
+{
+  "json": {
+    "snippet": {
+      "title": "playlist-title"
+    }
+  }
+}
+
+GET https://www.googleapis.com/youtube/v3/search?part=snippet&videoEmbeddable=true&q=country
+
+## Examples of status code usage
+
+## Examples of routing and query string usage
+
+## Examples of each request header
+
+## Examples of each response header
+
+## Examples of each response type
+
+## Examples of each request type to the external API 
+Search query example: 
+GET https://www.googleapis.com/youtube/v3/search?part=snippet&videoEmbeddable=true&q=country
+
+Create playlist with title:
+POST https://www.googleapis.com/youtube/v3/playlists?part=snippet&access_token=
+{
+  "json": {
+    "snippet": {
+      "title": "playlist-title"
+    }
+  }
+}
+
 ## Challenge Rating
 
 This goal will likely be within your ZPD if you...
@@ -48,60 +96,61 @@ An added benefit of working on a concept-focus goal is that you'll have a projec
 
 ## Specifications
 
-- [ ] Artifact produced is a GitHub repo.
-- [ ] GitHub repo contains a web server.
-- [ ] Can run the command `npm start` to start the web server at port 3000.
-- [ ] The web server source code is written using the [Express][express] library.
+- [x] Artifact produced is a GitHub repo.
+- [x] GitHub repo contains a web server.
+- [x] Can run the command `npm start` to start the web server at port 3000.
+- [x] The web server source code is written using the [Express][express] library.
 - [ ] The web server handles routes for the following HTTP verbs
-  - [ ] `GET`
-  - [ ] `POST`
+  - [x] `GET`
+  - [x] `POST`
   - [ ] `PUT/PATCH`
   - [ ] `DELETE`
 - [ ] Examples of each HTTP verb usage are listed and linked to in the README
 - [ ] The web server makes use of the following response status codes
-  - [ ] `200` (OK)
+  - [x] `200` (OK)
   - [ ] `201` (Created)
   - [ ] `400` (Bad Request)
+  - [x] `401` (Unauthorized) ** Note: our team added 401 to this list ** 
   - [ ] `301` (Moved Permanently)
   - [ ] `403` (Forbidden)
   - [ ] `404` (Not Found)
   - [ ] `500` (Internal Server Error)
 - [ ] Examples of each status code usage are listed and linked to in the README
-- [ ] The web server uses URL components in routing and responding
-  - [ ] Different paths trigger different routes
-  - [ ] Values from the URL query string are used in a route
+- [x] The web server uses URL components in routing and responding
+  - [x] Different paths trigger different routes
+  - [x] Values from the URL query string are used in a route
 - [ ] Examples of routing and query string usage are listed and linked to in the README
 - [ ] The web server makes use of the following request headers
-  - [ ] `Accept`
+  - [x] `Accept`
   - [ ] `Origin`
-  - [ ] `Content Type`
-  - [ ] `Authorization`
-  - [ ] `Cookie`
+  - [x] `Content Type`
+  - [x] `Authorization` 
+  - [x] `Cookie`
 - [ ] Examples of each request header usage are listed and linked to in the README
 - [ ] The web server makes use of the following response headers
   - [ ] `Location`
-  - [ ] `Set-Cookie`
+  - [x] `Set-Cookie`
   - [ ] `Refresh`
   - [ ] `Access-Control-Allow-Origin`
   - [ ] `Content-Length`
 - [ ] Examples of each response header usage are listed and linked to in the README
-- [ ] The web server serves different types of resources
-  - [ ] Asset files (CSS, images)
-  - [ ] Static HTML
-  - [ ] Static JSON
-  - [ ] Dynamic resources (content of response changes based on query params, request headers, and/or application state)
+- [x] The web server serves different types of resources
+  - [x] Asset files (CSS, images)
+  - [x] Static HTML
+  - [x] Static JSON
+  - [x] Dynamic resources (content of response changes based on query params, request headers, and/or application state)
 - [ ] Examples of each response type are listed and linked to in the README
 - [ ] Example of a raw HTTP request and the server's raw HTTP response are included in the README
   - [ ] Examples show full HTTP message header
   - [ ] Examples show full HTTP message body
 - [ ] The web server makes the following request types to an external API
-  - [ ] Get a resource
-  - [ ] Create a resource
+  - [x] Get a resource
+  - [x] Create a resource
   - [ ] Update a resource
   - [ ] Delete a resource
 - [ ] Examples of each request type to the external API are listed and linked to in the README
 - [ ] The best resources you find for learning testing are added to a file `resources.md`
-- [ ] The artifact produced is properly licensed, preferably with the [MIT license][mit-license]
+- [x] The artifact produced is properly licensed, preferably with the [MIT license][mit-license]
 
 ## Stretch
 
