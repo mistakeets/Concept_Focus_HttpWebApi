@@ -6,7 +6,8 @@
   margin-top: 1em;
 }
 
-.playlist-block, .search-results {
+.playlist-block,
+.search-results {
   height: 75%;
   overflow: scroll;
 }
@@ -21,9 +22,13 @@
 
 .list-of-playlists {
   background-color: lightblue;
-    border: 2px black solid;
+  border: 2px black solid;
 }
 
 .new-playlist {
   margin-top: 1em;
+}
+
+.btn-group {
+  max-width: 100%;
 }

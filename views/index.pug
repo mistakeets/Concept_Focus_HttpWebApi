@@ -10,11 +10,11 @@ block content
             h3 Playlist 
             div.d-flex.justify-content-end
               div.btn-group
-                button.btn.btn-primary.dropdown-toggle(data-toggle= 'dropdown',
-                  aria-haspopup= 'true', aria-expanded='false', disabled= !isLoggedin) Load Playlist
+                button.btn.btn-primary.btn-sm.dropdown-toggle(data-toggle= 'dropdown',
+                  aria-haspopup= 'true', aria-expanded='false', disabled= !isLoggedin) Load
                 div.dropdown-menu.list-of-playlists
-              | &nbsp
-              button.btn.btn-primary.btn-sm Save
+                button.btn.btn-danger.btn-sm.delete-button Delete &nbsp
+                  i.fa.fa-bomb
           .card-block.playlist-block
             ul.list-group.playlist
       .col-md-7

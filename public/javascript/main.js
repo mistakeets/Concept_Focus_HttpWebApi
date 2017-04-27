@@ -15,42 +15,59 @@ function onPlayerReady(event) {
   populatePlaylist('PLyATlhF4kiF01VXBmdOFabxrvMkJUwxLU')
 }
 
-let createPlaylist = function () {
+let createPlaylist = function() {
   query = prompt("Enter playlist name")
   fetch('createPlaylist?title=' + query, {
-    method: 'GET',
-    credentials: 'include',
-    headers: {
-      'Accept': 'application/json'
-    }
-  })
-  .then((response) => {
-    return response.json()
-  })
-  .then((response) => {
-    populatePlaylist(response.id)
-    populateAllPlaylists()
-  })
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        'Accept': 'application/json'
+      }
+    })
+    .then((response) => {
+      return response.json()
+    })
+    .then((response) => {
+      populatePlaylist(response.id)
+      populateAllPlaylists()
+    })
 }
 
-let getSearchResults = function (query, callback) {
+let deletePlaylist = function(id) {
+  if (confirm("Are you sure you want to delete this playlist?")) {
+    fetch('deletePlaylist?id=' + id, {
+        method: 'DELETE',
+        credentials: 'include'
+      })
+      .then((response) => {
+        return response.text()
+      })
+      .then((response) => {
+        populateAllPlaylists()
+        populatePlaylist('PLyATlhF4kiF01VXBmdOFabxrvMkJUwxLU')
+      })
+      .catch(console.log)
+  }
+}
+
+let getSearchResults = function(query, callback) {
   fetch('search?q=' + query, {
-    method: 'GET',
-    headers: {
-      'Accept': 'application/json'
-    }
-  })
-  .then((response) => {
-    return response.json()
-  })
-  .then(callback)
-  .catch(console.log)
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json'
+      }
+    })
+    .then((response) => {
+      return response.json()
+    })
+    .then(callback)
+    .catch(console.log)
 }
 
-let populateSearchResults = function (query) {
+let populateSearchResults = function(query) {
   getSearchResults(query, (response) => {
     $('.search-results').html('')
-    for(let item of response.items) {
+    for (let item of response.items) {
       let html = ''
       html += '<div class="card search-item" onclick="playVideo(\''
       html += item.id.videoId + '\')">'
@@ -66,23 +83,23 @@ let populateSearchResults = function (query) {
 
 let getAllPlaylists = function(callback) {
   fetch('/getAllPlaylists', {
-    method: 'GET',
-    credentials: 'include',
-    headers: {
-      'Accept': 'application/json'
-    }
-  })
-  .then((response) => {
-    return response.json()
-  })
-  .then(callback)
-  .catch(console.log)
+      method: 'GET',
+      credentials: 'include',
+      headers: {
+        'Accept': 'application/json'
+      }
+    })
+    .then((response) => {
+      return response.json()
+    })
+    .then(callback)
+    .catch(console.log)
 }
 
 let populateAllPlaylists = function() {
   getAllPlaylists((response) => {
-  $('.list-of-playlists').html('');
-    for(let item of response.items) {
+    $('.list-of-playlists').html('');
+    for (let item of response.items) {
       let html = ''
       html += '<a href="#" class="dropdown-item" onclick="populatePlaylist(\''
       html += item.id
@@ -115,7 +132,7 @@ let getPlaylist = function(playlistId, callback) {
 }
 let populatePlaylist = function(playlistId) {
   getPlaylist(playlistId, (response) => {
-    if(response.items.length > 0)
+    if (response.items.length > 0)
       playVideo(response.items[0].snippet.resourceId.videoId)
     $('.playlist').html(' ');
     for (let item of response.items) {
@@ -124,6 +141,8 @@ let populatePlaylist = function(playlistId) {
         ' onclick="playVideo(\'' + item.snippet.resourceId.videoId +
         '\')">' + item.snippet.title + '</a></li>')
     }
+    $('.delete-button').attr('onclick', 'deletePlaylist("' +
+      playlistId + '")')
   })
 }
 
@@ -133,7 +152,7 @@ let playVideo = function(videoId) {
 
 $('document').ready(function() {
   $('.search').on('keypress', (event) => {
-    if(event.keyCode === 13)
+    if (event.keyCode === 13)
       populateSearchResults($('.search').val())
   })
 })
