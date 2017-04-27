@@ -89,7 +89,7 @@ app.get('/login', (req, res) => {
 app.get('/auth/google', passport.authenticate('google', {
   scope: [
     'https://www.googleapis.com/auth/plus.login',
-    'https://www.googleapis.com/auth/youtube.readonly'
+    'https://www.googleapis.com/auth/youtube'
   ]
 }))
 
@@ -116,6 +116,32 @@ app.get('/search', (req, res) => {
     res.status(200)
     res.send(response.body)
   })
+})
+
+app.get('/createPlaylist', (req, res) => {
+
+  if(req.isAuthenticated()) {
+    let title = req.query.title
+    let url = 'https://www.googleapis.com/youtube/v3/playlists'
+    url += '?part=snippet&access_token='
+    url += req.session.passport.user.accessToken
+    let post = {
+      "json": {
+        "snippet": {
+          "title": title
+        }
+      }
+    }
+    request.post(url, post, (error, response) => {
+      res.status(200)
+      res.set('Content-Type', 'application/json')
+      res.send(response.body)
+    })
+  }
+  else {
+    res.status(401)
+    res.send('Request requires authentication. Please <a href="login">login.</a>')
+  }
 })
 
 app.get('/getAllPlaylists', (req, res) => {

@@ -11,7 +11,7 @@ block content
             div.d-flex.justify-content-end
               div.btn-group
                 button.btn.btn-primary.dropdown-toggle(data-toggle= 'dropdown',
-                  aria-haspopup= 'true', aria-expanded='false') Load Playlist
+                  aria-haspopup= 'true', aria-expanded='false', disabled= !isLoggedin) Load Playlist
                 div.dropdown-menu.list-of-playlists
               | &nbsp
               button.btn.btn-primary.btn-sm Save
