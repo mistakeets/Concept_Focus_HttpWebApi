@@ -118,9 +118,9 @@ app.get('/search', (req, res) => {
   })
 })
 
-app.get('/createPlaylist', (req, res) => {
+app.post('/createPlaylist', (req, res) => {
 
-  if(req.isAuthenticated()) {
+  if (req.isAuthenticated()) {
     let title = req.query.title
     let url = 'https://www.googleapis.com/youtube/v3/playlists'
     url += '?part=snippet&access_token='
@@ -137,8 +137,23 @@ app.get('/createPlaylist', (req, res) => {
       res.set('Content-Type', 'application/json')
       res.send(response.body)
     })
+  } else {
+    res.status(401)
+    res.send('Request requires authentication. Please <a href="login">login.</a>')
   }
-  else {
+})
+
+app.delete('/deletePlaylist', (req, res) => {
+  if (req.isAuthenticated()) {
+    let id = req.query.id
+    let url = 'https://www.googleapis.com/youtube/v3/playlists'
+    url += '?id=' + id + '&access_token='
+    url += req.session.passport.user.accessToken
+    request.delete(url, {}, (error, response) => {
+      res.status(response.statusCode)
+      res.send(response)
+    })
+  } else {
     res.status(401)
     res.send('Request requires authentication. Please <a href="login">login.</a>')
   }
@@ -146,35 +161,32 @@ app.get('/createPlaylist', (req, res) => {
 
 app.get('/getAllPlaylists', (req, res) => {
   let apiUrl = 'https://www.googleapis.com/youtube/v3/playlists'
-  if(req.isAuthenticated()) {
+  if (req.isAuthenticated()) {
     let url = "?part=snippet&mine=true&access_token=" +
       req.session.passport.user.accessToken + "&maxResults=50"
     request.get(apiUrl + url, (error, response) => {
       res.set('Content-Type', 'application/json')
       res.status(200).send(response.body)
     })
-  }
-  else {
+  } else {
     res.status(401)
       .send('Request requires authentication. Please <a href="login">login.</a>')
   }
 })
 
 app.get('/getSinglePlaylist', (req, res) => {
-  if(Object.keys(req.query).length === 0) {
+  if (Object.keys(req.query).length === 0) {
     res.status(400)
       .send('Bad Request: Playlist ID required.')
-  }
-  else {
+  } else {
     let playlistId = req.query.playlistId
     let apiUrl = 'https://www.googleapis.com/youtube/v3/playlistItems'
 
     let url = apiUrl + "?part=snippet&maxResults=50&playlistId=" + playlistId
 
-    if(req.isAuthenticated()) {
+    if (req.isAuthenticated()) {
       url += '&access_token=' + req.session.passport.user.accessToken
-    }
-    else {
+    } else {
       url += '&key=' + google_api_key
     }
     request.get(url, (error, response) => {
