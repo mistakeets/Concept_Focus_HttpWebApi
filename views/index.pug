@@ -26,6 +26,11 @@ block content
           .card-block
             a.btn.btn-block.btn-danger(href= loginLogout)
               i.fa.fa-youtube.fa-2x &nbsp&nbsp
-              | #{loginLogoutButton} 
+              | #{loginLogoutButton}
+        .card
+          .card-block
+            input.search.form-control(type='text', placeHolder='Search')
+        .card
+          .card-block.search-results
   if isLoggedin == true
     script populateAllPlaylists()

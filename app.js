@@ -5,13 +5,12 @@ const passport = require('passport')
 const util = require('util')
 const request = require('request')
 const pug = require('pug')
-
 const session = require('express-session')
-
 const GoogleStrategy = require('passport-google-oauth2').Strategy;
 
 const port = process.env.PORT || 3000
 
+const google_api_key = 'AIzaSyDuS3cbDdZ2Jrv2koZaEftyxD6aHcPNUss'
 const google_client_id = '136034564686-g6jvbs2dih9op1jqvs8273f60gg0vp8h.apps.googleusercontent.com'
 const google_client_secret = '7GG4_H7pTDxcXp-IwpGkOyt0'
 const google_callback_url = 'http://127.0.0.1:3000/auth/google/callback'
@@ -104,13 +103,27 @@ app.get('/logout', (req, res) => {
   res.redirect('/')
 })
 
-const playlistApiUrl = 'https://www.googleapis.com/youtube/v3/playlists'
+app.get('/search', (req, res) => {
+  let query = req.query.q
+  let url = '';
+  url += 'https://www.googleapis.com/youtube/v3/search'
+  url += '?part=snippet&videoEmbeddable=true&type=video&maxResults=25&q='
+  url += query
+  url += '&key=' + google_api_key
+
+  request.get(url, (error, response) => {
+    res.set('Content-Type', 'application/json')
+    res.status(200)
+    res.send(response.body)
+  })
+})
 
 app.get('/getAllPlaylists', (req, res) => {
+  let apiUrl = 'https://www.googleapis.com/youtube/v3/playlists'
   if(req.isAuthenticated()) {
     let url = "?part=snippet&mine=true&access_token=" +
       req.session.passport.user.accessToken + "&maxResults=50"
-    request.get(playlistApiUrl + url, (error, response) => {
+    request.get(apiUrl + url, (error, response) => {
       res.set('Content-Type', 'application/json')
       res.status(200).send(response.body)
     })
@@ -136,7 +149,7 @@ app.get('/getSinglePlaylist', (req, res) => {
       url += '&access_token=' + req.session.passport.user.accessToken
     }
     else {
-      url += '&key=AIzaSyDuS3cbDdZ2Jrv2koZaEftyxD6aHcPNUss'
+      url += '&key=' + google_api_key
     }
     request.get(url, (error, response) => {
       res.set('Content-Type', 'application/json')

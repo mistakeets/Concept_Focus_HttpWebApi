@@ -15,8 +15,38 @@ function onPlayerReady(event) {
   populatePlaylist('PLyATlhF4kiF01VXBmdOFabxrvMkJUwxLU')
 }
 
+let getSearchResults = function (query, callback) {
+  fetch('search?q=' + query, {
+    method: 'GET',
+    headers: {
+      'Accept': 'application/json'
+    }
+  })
+  .then((response) => {
+    return response.json()
+  })
+  .then(callback)
+  .catch(console.log)
+}
+
+let populateSearchResults = function (query) {
+  getSearchResults(query, (response) => {
+    $('.search-results').html('')
+    for(let item of response.items) {
+      let html = ''
+      html += '<div class="card search-item" onclick="playVideo(\''
+      html += item.id.videoId + '\')">'
+      html += '<img class="img-thumbnail img-fluid" src="'
+      html += item.snippet.thumbnails.default.url + '">'
+      html += '<div class="card-block"><p class="card-text">'
+      html += item.snippet.title + '</p></div>'
+      html += '</div>'
+      $('.search-results').append(html)
+    }
+  })
+}
+
 let getAllPlaylists = function(callback) {
-  let json = {}
   fetch('/getAllPlaylists', {
     method: 'GET',
     credentials: 'include',
@@ -46,7 +76,6 @@ let populateAllPlaylists = function() {
 }
 
 let getPlaylist = function(playlistId, callback) {
-  let json = {}
   fetch('/getSinglePlaylist?playlistId=' + playlistId, {
       method: 'GET',
       credentials: 'include',
@@ -79,5 +108,8 @@ let playVideo = function(videoId) {
 }
 
 $('document').ready(function() {
-
+  $('.search').on('keypress', (event) => {
+    if(event.keyCode === 13)
+      populateSearchResults($('.search').val())
+  })
 })
