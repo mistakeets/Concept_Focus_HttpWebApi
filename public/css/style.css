@@ -8,7 +8,7 @@
 
 .playlist-block,
 .search-results {
-  height: 75%;
+  max-height: 75%;
   overflow: scroll;
 }
 
@@ -31,4 +31,8 @@
 
 .btn-group {
   max-width: 100%;
+}
+
+.playlist-title {
+  font-size: 22px;
 }
