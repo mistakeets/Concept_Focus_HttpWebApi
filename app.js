@@ -62,20 +62,24 @@ app.use(passport.session())
 app.get('/', (req, res) => {
   let buttonText = ''
   let button = ''
+  let isLoggedin
 
 
   if (req.isAuthenticated()) {
     buttonText = 'Logout'
     button = '/logout'
+    isLoggedin = true;
   } else {
     buttonText = 'Login'
     button = '/login'
+    isLoggedin = false
   }
 
   res.render('index', {
     title: 'Concept Player',
     loginLogoutButton: buttonText,
-    loginLogout: button
+    loginLogout: button,
+    isLoggedin: isLoggedin
   })
 })
 
@@ -103,24 +107,37 @@ app.get('/logout', (req, res) => {
 const playlistApiUrl = 'https://www.googleapis.com/youtube/v3/playlists'
 
 app.get('/getAllPlaylists', (req, res) => {
-  let url = "?part=snippet&mine=true&access_token=" +
-    req.session.passport.user.accessToken
-  request.get(playlistApiUrl + url)
-    .on('response', (response) => {
+  if(req.isAuthenticated()) {
+    let url = "?part=snippet&mine=true&access_token=" +
+      req.session.passport.user.accessToken + "&maxResults=50"
+    request.get(playlistApiUrl + url, (error, response) => {
       res.set('Content-Type', 'application/json')
-      res.status(200).send(response)
+      res.status(200).send(response.body)
     })
+  }
+  else {
+    res.status(401)
+      .send('Request requires authentication. Please <a href="login">login.</a>')
+  }
 })
 
 app.get('/getSinglePlaylist', (req, res) => {
-  if (Object.keys(req.query).length === 0) {
+  if(Object.keys(req.query).length === 0) {
     res.status(400)
       .send('Bad Request: Playlist ID required.')
-  } else {
+  }
+  else {
     let playlistId = req.query.playlistId
     let apiUrl = 'https://www.googleapis.com/youtube/v3/playlistItems'
-    let url = apiUrl + "?part=snippet&playlistId=" + playlistId +
-      '&key=AIzaSyDuS3cbDdZ2Jrv2koZaEftyxD6aHcPNUss&maxResults=50'
+
+    let url = apiUrl + "?part=snippet&maxResults=50&playlistId=" + playlistId
+
+    if(req.isAuthenticated()) {
+      url += '&access_token=' + req.session.passport.user.accessToken
+    }
+    else {
+      url += '&key=AIzaSyDuS3cbDdZ2Jrv2koZaEftyxD6aHcPNUss'
+    }
     request.get(url, (error, response) => {
       res.set('Content-Type', 'application/json')
       res.status(200).send(response.body)
