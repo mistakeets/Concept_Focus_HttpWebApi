@@ -15,6 +15,24 @@ function onPlayerReady(event) {
   populatePlaylist('PLyATlhF4kiF01VXBmdOFabxrvMkJUwxLU')
 }
 
+let createPlaylist = function () {
+  query = prompt("Enter playlist name")
+  fetch('createPlaylist?title=' + query, {
+    method: 'GET',
+    credentials: 'include',
+    headers: {
+      'Accept': 'application/json'
+    }
+  })
+  .then((response) => {
+    return response.json()
+  })
+  .then((response) => {
+    populatePlaylist(response.id)
+    populateAllPlaylists()
+  })
+}
+
 let getSearchResults = function (query, callback) {
   fetch('search?q=' + query, {
     method: 'GET',
@@ -63,6 +81,7 @@ let getAllPlaylists = function(callback) {
 
 let populateAllPlaylists = function() {
   getAllPlaylists((response) => {
+  $('.list-of-playlists').html('');
     for(let item of response.items) {
       let html = ''
       html += '<a href="#" class="dropdown-item" onclick="populatePlaylist(\''
@@ -72,6 +91,11 @@ let populateAllPlaylists = function() {
       html += '</a>'
       $('.list-of-playlists').append(html)
     }
+    let html = ''
+    html += '<a href="#" class="dropdown-item new-playlist" '
+    html += 'onclick="createPlaylist()"><b>New Playlist</b>'
+    html += '</a>'
+    $('.list-of-playlists').append(html)
   })
 }
 
