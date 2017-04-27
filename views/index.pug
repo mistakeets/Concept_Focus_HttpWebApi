@@ -8,8 +8,11 @@ block content
         .card
           div.card-header
             h3 Playlist 
-            div.d-flex.justify-content-start
-              button.btn.btn-primary.btn-sm Load
+            div.d-flex.justify-content-end
+              div.btn-group
+                button.btn.btn-primary.dropdown-toggle(data-toggle= 'dropdown',
+                  aria-haspopup= 'true', aria-expanded='false') Load Playlist
+                div.dropdown-menu.list-of-playlists
               | &nbsp
               button.btn.btn-primary.btn-sm Save
           .card-block.playlist-block
@@ -24,4 +27,5 @@ block content
             a.btn.btn-block.btn-danger(href= loginLogout)
               i.fa.fa-youtube.fa-2x &nbsp&nbsp
               | #{loginLogoutButton} 
-    
+  if isLoggedin == true
+    script populateAllPlaylists()
