@@ -118,6 +118,25 @@ app.get('/search', (req, res) => {
   })
 })
 
+app.delete('/deleteFromPlaylist', (req, res) => {
+  if(req.isAuthenticated()) {
+    let id = req.query.id;
+    let url = 'https://www.googleapis.com/youtube/v3/playlistItems'
+    url += '?id=' + id
+    url += '&access_token=' + req.session.passport.user.accessToken
+
+    request.delete(url, {}, (error, response) => {
+      res.status(response.statusCode)
+      res.set('Content-Type', 'application/json')
+      res.send({})
+    })
+  }
+  else {
+    res.status(401)
+    res.send('Request requires authentication. Please <a href="login">login.</a>')
+  }
+})
+
 app.post('/addToPlaylist', (req, res) => {
   if(req.isAuthenticated()) {
     let body = {

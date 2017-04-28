@@ -1,3 +1,10 @@
+.delete-video {
+  color: red;
+}
+.delete-video:hover {
+  color: darkred;
+}
+
 body {
   background-color: #2b776d;
 }
