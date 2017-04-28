@@ -1,7 +1,14 @@
 let player = {}
+
+let currentVideo = {
+  downloaded: false
+}
+
 let playlist = {
   id: '',
-  title: ''
+  title: '',
+  downloaded: false,
+  items: []
 }
 
 function onYouTubeIframeAPIReady() {
@@ -16,7 +23,67 @@ function onYouTubeIframeAPIReady() {
 }
 
 function onPlayerReady(event) {
-  populatePlaylist('PLyATlhF4kiF01VXBmdOFabxrvMkJUwxLU')
+  populatePlaylist('PLyATlhF4kiF01VXBmdOFabxrvMkJUwxLU', 'Playlist')
+}
+
+let downloadSong = function () {
+  if(!currentVideo.downloaded) {
+    currentVideo.downloaded = true
+    $('.download-song').attr('class', 'btn btn-warning download-song')
+
+    let body = {
+      items: [
+        {
+          videoId: player.videoId,
+          title: player.videoId
+        }
+      ]
+    }
+
+    fetch('download/playlist?name=singles', {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(body)
+    })
+    .then((response) => {
+      return response
+    })
+    .then((response) => {
+      $('.download-song').attr('class', 'btn btn-success download-song')
+    })
+    .catch(console.log)
+
+  }
+}
+
+let downloadPlaylist = function() {
+  if(!playlist.downloaded) {
+    playlist.downloaded = true
+    $('.download-button').attr('class', 'btn btn-warning btn-sm download-button')
+    let body = {
+      items: playlist.items
+    }
+    fetch('download/playlist?name=' + playlist.title, {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(body)
+    })
+    .then((response) => {
+      return response
+    })
+    .then((response) => {
+      if(response.status == 201) {
+        $('.download-button').attr('class', 'btn btn-success btn-sm download-button')
+      }
+    })
+    .catch(console.log)
+  }
 }
 
 let deleteVideo = function(videoId) {
@@ -204,7 +271,21 @@ let getPlaylist = function(playlistId, callback) {
 let populatePlaylist = function(playlistId, title) {
   getPlaylist(playlistId, (response) => {
     $('.playlist').html(' ');
+
+    playlist.id = playlistId
+    playlist.title = title.replace(/[^\w]/gi, '')
+    playlist.items = []
+    playlist.downloaded = false
+    $('.download-button').attr('class', 'btn btn-info btn-sm download-button')
+
     for (let item of response.items) {
+
+      let safeTitle = item.snippet.title.replace(/[^\w]/gi, '')
+      playlist.items.push({
+        videoId: item.snippet.resourceId.videoId,
+        title: safeTitle
+      })
+
       let videoId = item.snippet.resourceId.videoId
       let html = '' +
         '<li class="list-group-item d-inline-block ' + item.id + '">' +
@@ -226,9 +307,6 @@ let populatePlaylist = function(playlistId, title) {
       $('.playlist').append(html)
     }
 
-    playlist.id = playlistId
-    playlist.title = title
-
     $('.playlist-title').html(title)
     $('.edit').attr('onclick', 'updatePlaylistName("' +
       playlistId + '")')
@@ -239,6 +317,8 @@ let populatePlaylist = function(playlistId, title) {
 
 let playVideo = function(videoId) {
   player.videoId = videoId
+  $('.download-song').attr('class', 'btn btn-primary download-song')
+  currentVideo.downloaded = false
   player.loadVideoById(videoId)
 }
 
@@ -248,4 +328,6 @@ $('document').ready(function() {
       populateSearchResults($('.search').val())
   })
   $('.add-to-playlist').on('click', addToPlaylist)
+  $('.download-button').on('click', downloadPlaylist)
+  $('.download-song').on('click', downloadSong)
 })

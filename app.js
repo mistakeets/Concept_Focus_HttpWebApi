@@ -8,6 +8,8 @@ const pug = require('pug')
 const session = require('express-session')
 const GoogleStrategy = require('passport-google-oauth2').Strategy;
 
+const download = require('./download.js')
+
 const port = process.env.PORT || 3000
 
 const google_api_key = 'AIzaSyDuS3cbDdZ2Jrv2koZaEftyxD6aHcPNUss'
@@ -92,6 +94,25 @@ app.get('/auth/google', passport.authenticate('google', {
     'https://www.googleapis.com/auth/youtube'
   ]
 }))
+
+app.post('/download/playlist', (req, res) => {
+  if(req.isAuthenticated()) {
+    let playlist = {
+      name: req.query.name,
+      items: req.body.items
+    }
+
+    download.playlist(playlist, (progress) => {
+    }, () => {
+      res.set('Content-Type', 'text/plain')
+      res.send('Downloads complete')
+    })
+  }
+  else {
+    res.status(401)
+    res.send('Request requires authentication. Please <a href="login">login.</a>')
+  }
+})
 
 app.get('/auth/google/callback', passport.authenticate('google', {
   successRedirect: '/',
