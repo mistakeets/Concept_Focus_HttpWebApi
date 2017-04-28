@@ -14,26 +14,153 @@ Using the Google/YouTube API, the newly created playlist is then sent back to Yo
 
 ## Examples of HTTP verb usage
 
-POST https://www.googleapis.com/youtube/v3/playlists?part=snippet&access_token=
-{
-  "json": {
-    "snippet": {
-      "title": "playlist-title"
-    }
-  }
-}
+These HTTP verbs are used in our project routes (app.js)
 
-GET https://www.googleapis.com/youtube/v3/search?part=snippet&videoEmbeddable=true&q=country
+GET /   
+Host: 127.0.0.1:3000
+(Loads main app)
+
+POST /download/playlist
+Host: 127.0.0.1:3000
+query: name (name of playlist)
+{
+  items: array[{
+    videoId: '',
+    title: ''
+  }]
+}
+(downloads a playlist from YouTube)
+
+PUT /updatePlaylistName
+Host: 127.0.0.1:3000
+queries: title, id
+{}
+
+DELETE /deleteFromPlaylist
+Host: 127.0.0.1:3000
+query: id
+{}
 
 ## Examples of status code usage
 
+GET /search
+Host: 127.0.0.1:3000
+**Response**
+Status Code 200
+Json object (search results)
+
+POST /createPlaylist
+Host: 127.0.0.1:3000
+**Response**
+Status Code 201
+Json object (playlist)
+
+GET /getSinglePlaylist
+Host: 127.0.0.1:3000
+Authenication None
+**Response**
+Status Code 400
+Bad Request: Playlist ID Required
+
+GET /oldPage
+Host: 127.0.0.1:3000
+**Response**
+Status Code 301
+This page has been moved permanently
+HEADER location: /
+
+GET /admin
+Host: 127.0.0.1:3000
+**Response**
+Status Code 403
+Forbidden
+
+GET /someRandomPage
+Host: 127.0.0.1:3000
+**Response**
+Status Code 404
+File not found
+
+GET /delete-all
+Host: 127.0.0.1:3000
+**Response**
+Status Code 500
+Internal Server Error
+
 ## Examples of routing and query string usage
 
+http://127.0.0.1:3000/getSinglePlaylist?playlistId=PLWSrXE0yCvMMcpgAxwMyDLqoqOu7W11sP 
+
+http://127.0.0.1:3000/search?q=soup
+
 ## Examples of each request header
+Accept Request header:
+
+DELETE /deleteFromPlaylist?id=UEx5QVRsaEY0a2lGMDFWWEJtZE9GYWJ4cnZNa0pVd3hMVS5GM0Q3M0MzMzY5NTJFNTdE HTTP/1.1
+Host: 127.0.0.1:3000
+Connection: keep-alive
+accept: application/json
+Origin: http://127.0.0.1:3000
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.133 Safari/537.36
+Referer: http://127.0.0.1:3000/
+Accept-Encoding: gzip, deflate, sdch, br
+Accept-Language: en-US,en;q=0.8
+Cookie: conceptplayer=s%3AXyNLqQ2RlTkagCYxkFg_dk6i92EcfeuM.buA7IwWoUfgoiqN3OQRp7HDNM%2F%2FIH1EfE3qhKr7Ql%2BQ
+
+Origin/Content/Cookie Request type header example:
+
+POST /download/playlist?name=singles HTTP/1.1
+Host: 127.0.0.1:3000
+Connection: keep-alive
+Content-Length: 59
+Origin: http://127.0.0.1:3000
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.133 Safari/537.36
+content-type: application/json
+Accept: */*
+Referer: http://127.0.0.1:3000/
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-US,en;q=0.8
+Cookie: conceptplayer=s%3AXyNLqQ2RlTkagCYxkFg_dk6i92EcfeuM.buA7IwWoUfgoiqN3OQRp7HDNM%2F%2FIH1EfE3qhKr7Ql%2BQ
+
+Authorization usage examples: 
+
+passport.serializeUser((user, done) => {
+  done(null, user)
+})
+
+passport.deserializeUser((obj, done) => {
+  done(null, obj)
+})
+
+app.delete('/deleteFromPlaylist', (req, res) => {
+  if (req.isAuthenticated()) {
+    let id = req.query.id;
+    let url = 'https://www.googleapis.com/youtube/v3/playlistItems'
+    url += '?id=' + id
+    url += '&access_token=' + req.session.passport.user.accessToken
 
 ## Examples of each response header
 
-## Examples of each response type
+Location response header usage example:
+app.get('/oldPage', (req, res) => {
+  res.status(301)
+  res.set('Location', '/')
+  res.send('This page has been moved FOREVER!')
+})
+
+Set-Cookie example:
+Cookie: conceptplayer=s%3AXyNLqQ2RlTkagCYxkFg_dk6i92EcfeuM.buA7IwWoUfgoiqN3OQRp7HDNM%2F%2FIH1EfE3qhKr7Ql%2BQ
+
+Content-Length:21993
+Content-Type:application/json; charset=utf-8
+Date:Fri, 28 Apr 2017 21:24:55 GMT
+ETag:W/"55e9-9Vq4arW2LOkOwWZSSrQW/R09ZpI"
+X-Powered-By:Express
+Request Headers
+Provisional headers are shown
+accept:application/json
+Referer:http://127.0.0.1:3000/
+User-Agent:Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.133 Safari/537.36
 
 ## Examples of each request type to the external API 
 Search query example: 
@@ -48,6 +175,42 @@ POST https://www.googleapis.com/youtube/v3/playlists?part=snippet&access_token=
     }
   }
 }
+
+Update Playlist Name (put request to external API):
+app.put('/updatePlaylistName', (req, res) => {
+  if (req.isAuthenticated()) {
+    let id = req.query.id
+    let title = req.query.title
+    let url = 'https://www.googleapis.com/youtube/v3/playlists'
+    url += '?part=snippet&access_token='
+    url += req.session.passport.user.accessToken
+    let body = {
+      "json": {
+        "id": id,
+        "snippet": {
+          "title": title
+        }
+      }
+    }
+
+Delete playlist (example of a delete request to the external API)
+app.delete('/deletePlaylist', (req, res) => {
+  if (req.isAuthenticated()) {
+    let id = req.query.id
+    let url = 'https://www.googleapis.com/youtube/v3/playlists'
+    url += '?id=' + id + '&access_token='
+    url += req.session.passport.user.accessToken
+    request.delete(url, {}, (error, response) => {
+      res.status(response.statusCode)
+      res.send(response)
+    })
+  } else {
+    res.status(401)
+    res.send('Request requires authentication. Please <a href="login">login.</a>')
+  }
+})
+
+
 
 ## Challenge Rating
 
@@ -105,50 +268,50 @@ An added benefit of working on a concept-focus goal is that you'll have a projec
   - [x] `POST`
   - [x] `PUT/PATCH`
   - [x] `DELETE`
-- [ ] Examples of each HTTP verb usage are listed and linked to in the README
-- [ ] The web server makes use of the following response status codes
+- [x] Examples of each HTTP verb usage are listed and linked to in the README
+- [x] The web server makes use of the following response status codes
   - [x] `200` (OK)
   - [x] `201` (Created)
   - [x] `400` (Bad Request)
   - [x] `401` (Unauthorized) ** Note: our team added 401 to this list ** 
-  - [ ] `301` (Moved Permanently)
+  - [x] `301` (Moved Permanently)
   - [x] `403` (Forbidden)
-  - [ ] `404` (Not Found)
-  - [ ] `500` (Internal Server Error)
-- [ ] Examples of each status code usage are listed and linked to in the README
+  - [x] `404` (Not Found)
+  - [x] `500` (Internal Server Error)
+- [x] Examples of each status code usage are listed and linked to in the README
 - [x] The web server uses URL components in routing and responding
   - [x] Different paths trigger different routes
   - [x] Values from the URL query string are used in a route
-- [ ] Examples of routing and query string usage are listed and linked to in the README
-- [ ] The web server makes use of the following request headers
+- [x] Examples of routing and query string usage are listed and linked to in the README
+- [x] The web server makes use of the following request headers
   - [x] `Accept`
-  - [ ] `Origin`
+  - [x] `Origin`
   - [x] `Content Type`
   - [x] `Authorization` 
   - [x] `Cookie`
-- [ ] Examples of each request header usage are listed and linked to in the README
-- [ ] The web server makes use of the following response headers
-  - [ ] `Location`
+- [x] Examples of each request header usage are listed and linked to in the README
+- [x] The web server makes use of the following response headers
+  - [x] `Location`
   - [x] `Set-Cookie`
   - [ ] `Refresh`
   - [ ] `Access-Control-Allow-Origin`
   - [ ] `Content-Length`
-- [ ] Examples of each response header usage are listed and linked to in the README
+- [x] Examples of each response header usage are listed and linked to in the README
 - [x] The web server serves different types of resources
   - [x] Asset files (CSS, images)
   - [x] Static HTML
   - [x] Static JSON
   - [x] Dynamic resources (content of response changes based on query params, request headers, and/or application state)
-- [ ] Examples of each response type are listed and linked to in the README
-- [ ] Example of a raw HTTP request and the server's raw HTTP response are included in the README
-  - [ ] Examples show full HTTP message header
-  - [ ] Examples show full HTTP message body
+- [x] Examples of each response type are listed and linked to in the README
+- [x] Example of a raw HTTP request and the server's raw HTTP response are included in the README
+  - [x] Examples show full HTTP message header
+  - [x] Examples show full HTTP message body
 - [x] The web server makes the following request types to an external API
   - [x] Get a resource
   - [x] Create a resource
   - [x] Update a resource
   - [x] Delete a resource
-- [ ] Examples of each request type to the external API are listed and linked to in the README
+- [x] Examples of each request type to the external API are listed and linked to in the README
 - [x] The best resources you find for learning testing are added to a file `resources.md`
 - [x] The artifact produced is properly licensed, preferably with the [MIT license][mit-license]
 
