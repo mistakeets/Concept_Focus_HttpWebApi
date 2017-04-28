@@ -1,3 +1,11 @@
+body {
+  background-color: #2b776d;
+}
+
+.youtube-player {
+  background-color: #b3ecff;
+}
+
 .card-block {
   padding: .25em;
 }
@@ -21,7 +29,7 @@
 }
 
 .list-of-playlists {
-  background-color: lightblue;
+  background-color: #7db8db;
   border: 2px black solid;
 }
 
@@ -35,4 +43,8 @@
 
 .playlist-title {
   font-size: 22px;
+}
+
+.search {
+  font-weight: bold;
 }

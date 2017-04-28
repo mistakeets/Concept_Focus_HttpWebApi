@@ -17,14 +17,18 @@ block content
                 button.btn.btn-primary.btn-sm.dropdown-toggle(data-toggle= 'dropdown',
                   aria-haspopup= 'true', aria-expanded='false', disabled= !isLoggedin) Load
                 div.dropdown-menu.list-of-playlists
-                button.btn.btn-danger.btn-sm.delete-button Delete &nbsp
+                button.btn.btn-danger.btn-sm.delete-button(disabled= !isLoggedin) Delete &nbsp
                   i.fa.fa-bomb
           .card-block.playlist-block
             ul.list-group.playlist
       .col-md-7
-        .card
-          .card-block.text-center
+        .card.youtube-player
+          .card-block.text-center.youtube-player
             div#youtube-player  
+          .card-block
+            button.btn.btn-primary.add-to-playlist(disabled= !isLoggedin)
+              i.fa.fa-plus-circle.fa-2x
+            
       .col-md-2
         .card
           .card-block

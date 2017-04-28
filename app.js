@@ -118,6 +118,32 @@ app.get('/search', (req, res) => {
   })
 })
 
+app.post('/addToPlaylist', (req, res) => {
+  if(req.isAuthenticated()) {
+    let body = {
+      "json": {
+        "snippet": {
+          "playlistId": req.body.playlistId,
+          "resourceId": {
+            "kind": "youtube#video",
+            "videoId": req.body.videoId
+          }
+        }
+      }
+    }
+    let url = 'https://www.googleapis.com/youtube/v3/playlistItems'
+    url += '?part=snippet&access_token=' + req.session.passport.user.accessToken
+
+    request.post(url, body, (error, response) => {
+      res.status(response.statusCode)
+      res.send(response.body)
+    })
+  } else {
+    res.status(401)
+    res.send('Request requires authentication. Please <a href="login">login.</a>')
+  }
+})
+
 app.post('/createPlaylist', (req, res) => {
   if (req.isAuthenticated()) {
     let title = req.query.title
