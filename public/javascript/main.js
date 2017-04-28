@@ -44,7 +44,8 @@ let downloadSong = function () {
       method: 'POST',
       credentials: 'include',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Origin': '127.0.0.1:3000'
       },
       body: JSON.stringify(body)
     })
