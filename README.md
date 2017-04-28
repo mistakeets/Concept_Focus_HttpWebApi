@@ -100,19 +100,19 @@ An added benefit of working on a concept-focus goal is that you'll have a projec
 - [x] GitHub repo contains a web server.
 - [x] Can run the command `npm start` to start the web server at port 3000.
 - [x] The web server source code is written using the [Express][express] library.
-- [ ] The web server handles routes for the following HTTP verbs
+- [x] The web server handles routes for the following HTTP verbs
   - [x] `GET`
   - [x] `POST`
-  - [ ] `PUT/PATCH`
-  - [ ] `DELETE`
+  - [x] `PUT/PATCH`
+  - [x] `DELETE`
 - [ ] Examples of each HTTP verb usage are listed and linked to in the README
 - [ ] The web server makes use of the following response status codes
   - [x] `200` (OK)
-  - [ ] `201` (Created)
-  - [ ] `400` (Bad Request)
+  - [x] `201` (Created)
+  - [x] `400` (Bad Request)
   - [x] `401` (Unauthorized) ** Note: our team added 401 to this list ** 
   - [ ] `301` (Moved Permanently)
-  - [ ] `403` (Forbidden)
+  - [x] `403` (Forbidden)
   - [ ] `404` (Not Found)
   - [ ] `500` (Internal Server Error)
 - [ ] Examples of each status code usage are listed and linked to in the README
@@ -143,13 +143,13 @@ An added benefit of working on a concept-focus goal is that you'll have a projec
 - [ ] Example of a raw HTTP request and the server's raw HTTP response are included in the README
   - [ ] Examples show full HTTP message header
   - [ ] Examples show full HTTP message body
-- [ ] The web server makes the following request types to an external API
+- [x] The web server makes the following request types to an external API
   - [x] Get a resource
   - [x] Create a resource
-  - [ ] Update a resource
-  - [ ] Delete a resource
+  - [x] Update a resource
+  - [x] Delete a resource
 - [ ] Examples of each request type to the external API are listed and linked to in the README
-- [ ] The best resources you find for learning testing are added to a file `resources.md`
+- [x] The best resources you find for learning testing are added to a file `resources.md`
 - [x] The artifact produced is properly licensed, preferably with the [MIT license][mit-license]
 
 ## Stretch
