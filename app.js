@@ -149,7 +149,10 @@ app.delete('/deleteFromPlaylist', (req, res) => {
     request.delete(url, {}, (error, response) => {
       res.status(response.statusCode)
       res.set('Content-Type', 'application/json')
-      res.send({})
+      if(req.get('Accept') == 'application/json')
+        res.send({})
+      else
+        res.send('')
     })
   } else {
     res.status(401)
@@ -291,9 +294,14 @@ app.get('/oldPage', (req, res) => {
   res.send('This page has been moved FOREVER!')
 })
 
-app.get('/someError', (req, res) => {
+app.get('/admin', (req, res) => {
+  res.status(403)
+  res.send('Forbidden')
+})
+
+app.get('/delete-all', (req, res) => {
   res.status(500)
-  res.send('Something broke.')
+  res.send('Internal Server Error')
 })
 
 app.use((req, res, next) => {
