@@ -19,8 +19,28 @@ function onPlayerReady(event) {
   populatePlaylist('PLyATlhF4kiF01VXBmdOFabxrvMkJUwxLU')
 }
 
-let addToPlaylist = function() {
+let deleteVideo = function(videoId) {
+  fetch('deleteFromPlaylist?id=' + videoId, {
+    method: 'DELETE',
+    credentials: 'include',
+    headers: {
+      'Accept': 'application/json',
+    }
+  })
+  .then((response) => {
+    return response
+  })
+  .then((response) => {
+    if(response.status === 204) {
+      $('.' + videoId).slideUp('fast', function () {
+        $(this).remove()
+      })
+    }
+  })
+  .catch(console.log)
+}
 
+let addToPlaylist = function() {
   $('.add-to-playlist').prop('disabled', true)
   setTimeout(() => {
     $('.add-to-playlist').prop('disabled', false)
@@ -185,10 +205,25 @@ let populatePlaylist = function(playlistId, title) {
   getPlaylist(playlistId, (response) => {
     $('.playlist').html(' ');
     for (let item of response.items) {
-      $('.playlist').append('<li class="list-group-item">' +
-        '<a href="javascript:;"' +
-        ' onclick="playVideo(\'' + item.snippet.resourceId.videoId +
-        '\')">' + item.snippet.title + '</a></li>')
+      let videoId = item.snippet.resourceId.videoId
+      let html = '' +
+        '<li class="list-group-item d-inline-block ' + item.id + '">' +
+          '<a class="float-left" href="javascript:;" onclick="playVideo(\'' +
+            videoId + '\')">' +
+            item.snippet.title +
+          '</a>'
+
+      if(window.loggedIn) {
+        html = html +
+          '<a class="float-right delete-video" ' +
+            'href="javascript:;" onclick="deleteVideo(\'' +
+            item.id + '\')">' +
+            '<i class="fa fa-minus-circle"> </i>' +
+          '</a>'
+      }
+      html = html +
+        '</li>'
+      $('.playlist').append(html)
     }
 
     playlist.id = playlistId
