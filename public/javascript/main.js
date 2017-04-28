@@ -44,7 +44,9 @@ let addToPlaylist = function() {
     return response.json()
   })
   .then((response) => {
-    populatePlaylist(playlist.id, playlist.title)
+    setTimeout(() => {
+      populatePlaylist(playlist.id, playlist.title)
+    }, 500)
   })
 }
 
