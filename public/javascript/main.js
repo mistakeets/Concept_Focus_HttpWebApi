@@ -1,4 +1,8 @@
 let player = {}
+let playlist = {
+  id: '',
+  title: ''
+}
 
 function onYouTubeIframeAPIReady() {
   player = new YT.Player('youtube-player', {
@@ -13,6 +17,35 @@ function onYouTubeIframeAPIReady() {
 
 function onPlayerReady(event) {
   populatePlaylist('PLyATlhF4kiF01VXBmdOFabxrvMkJUwxLU')
+}
+
+let addToPlaylist = function() {
+
+  $('.add-to-playlist').prop('disabled', true)
+  setTimeout(() => {
+    $('.add-to-playlist').prop('disabled', false)
+  }, 2000)
+  let playlistId = playlist.id
+  let videoId = player.videoId
+  let body = {
+    'playlistId': playlistId,
+    'videoId': videoId
+  }
+  fetch('addToPlaylist', {
+    method: 'POST',
+    credentials: 'include',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(body)
+  })
+  .then((response) => {
+    return response.json()
+  })
+  .then((response) => {
+    populatePlaylist(playlist.id, playlist.title)
+  })
 }
 
 let createPlaylist = function() {
@@ -148,8 +181,6 @@ let getPlaylist = function(playlistId, callback) {
 }
 let populatePlaylist = function(playlistId, title) {
   getPlaylist(playlistId, (response) => {
-    if (response.items.length > 0)
-      playVideo(response.items[0].snippet.resourceId.videoId)
     $('.playlist').html(' ');
     for (let item of response.items) {
       $('.playlist').append('<li class="list-group-item">' +
@@ -157,17 +188,20 @@ let populatePlaylist = function(playlistId, title) {
         ' onclick="playVideo(\'' + item.snippet.resourceId.videoId +
         '\')">' + item.snippet.title + '</a></li>')
     }
-    $('.playlist-title').html(title)
 
+    playlist.id = playlistId
+    playlist.title = title
+
+    $('.playlist-title').html(title)
     $('.edit').attr('onclick', 'updatePlaylistName("' +
       playlistId + '")')
-
     $('.delete-button').attr('onclick', 'deletePlaylist("' +
       playlistId + '")')
   })
 }
 
 let playVideo = function(videoId) {
+  player.videoId = videoId
   player.loadVideoById(videoId)
 }
 
@@ -176,4 +210,5 @@ $('document').ready(function() {
     if (event.keyCode === 13)
       populateSearchResults($('.search').val())
   })
+  $('.add-to-playlist').on('click', addToPlaylist)
 })
