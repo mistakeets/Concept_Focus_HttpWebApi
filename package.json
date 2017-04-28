@@ -24,6 +24,7 @@
     "express": "^4.15.2",
     "express-session": "^1.15.2",
     "fluent-ffmpeg": "^2.1.2",
+    "morgan": "^1.8.1",
     "passport": "^0.3.2",
     "passport-google-oauth2": "^0.1.6",
     "pgpromise": "^0.1.1",

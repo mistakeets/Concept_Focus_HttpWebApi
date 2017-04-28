@@ -1,4 +1,5 @@
 const express = require('express')
+const logger = require('morgan')
 const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
 const passport = require('passport')
@@ -46,6 +47,7 @@ app.set('views', 'views')
 app.set('port', port)
 
 app.use(express.static('./public'))
+app.use(logger('dev'))
 app.use(cookieParser())
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
@@ -96,19 +98,17 @@ app.get('/auth/google', passport.authenticate('google', {
 }))
 
 app.post('/download/playlist', (req, res) => {
-  if(req.isAuthenticated()) {
+  if (req.isAuthenticated()) {
     let playlist = {
       name: req.query.name,
       items: req.body.items
     }
 
-    download.playlist(playlist, (progress) => {
-    }, () => {
+    download.playlist(playlist, (progress) => {}, () => {
       res.set('Content-Type', 'text/plain')
       res.send('Downloads complete')
     })
-  }
-  else {
+  } else {
     res.status(401)
     res.send('Request requires authentication. Please <a href="login">login.</a>')
   }
@@ -140,7 +140,7 @@ app.get('/search', (req, res) => {
 })
 
 app.delete('/deleteFromPlaylist', (req, res) => {
-  if(req.isAuthenticated()) {
+  if (req.isAuthenticated()) {
     let id = req.query.id;
     let url = 'https://www.googleapis.com/youtube/v3/playlistItems'
     url += '?id=' + id
@@ -151,15 +151,14 @@ app.delete('/deleteFromPlaylist', (req, res) => {
       res.set('Content-Type', 'application/json')
       res.send({})
     })
-  }
-  else {
+  } else {
     res.status(401)
     res.send('Request requires authentication. Please <a href="login">login.</a>')
   }
 })
 
 app.post('/addToPlaylist', (req, res) => {
-  if(req.isAuthenticated()) {
+  if (req.isAuthenticated()) {
     let body = {
       "json": {
         "snippet": {
@@ -284,6 +283,22 @@ app.get('/getSinglePlaylist', (req, res) => {
       res.status(200).send(response.body)
     })
   }
+})
+
+app.get('/oldPage', (req, res) => {
+  res.status(301)
+  res.set('Location', '/')
+  res.send('This page has been moved FOREVER!')
+})
+
+app.get('/someError', (req, res) => {
+  res.status(500)
+  res.send('Something broke.')
+})
+
+app.use((req, res, next) => {
+  res.status(404)
+  res.send('File not found.')
 })
 
 app.listen(port, () => {
