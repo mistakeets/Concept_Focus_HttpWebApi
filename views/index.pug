@@ -17,9 +17,6 @@ block content
                 button.btn.btn-primary.btn-sm.dropdown-toggle(data-toggle= 'dropdown',
                   aria-haspopup= 'true', aria-expanded='false', disabled= !isLoggedin) Load
                 div.dropdown-menu.list-of-playlists
-                button.btn.btn-info.btn-sm.download-button(disabled = !isLoggedin) &nbsp
-                  i.fa.fa-download
-                  | &nbsp
                 button.btn.btn-danger.btn-sm.delete-button(disabled= !isLoggedin) Delete &nbsp
                   i.fa.fa-bomb
           .card-block.playlist-block
@@ -31,9 +28,6 @@ block content
           .card-block
             button.btn.btn-primary.add-to-playlist(disabled= !isLoggedin)
               i.fa.fa-plus-circle.fa-2x
-            | &nbsp&nbsp
-            button.btn.btn-primary.download-song(disabled= !isLoggedin)
-              i.fa.fa-download.fa-2x
             
       .col-md-2
         .card
