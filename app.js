@@ -1,3 +1,4 @@
+require('dotenv').config()
 const express = require('express')
 const logger = require('morgan')
 const bodyParser = require('body-parser')
@@ -9,14 +10,12 @@ const pug = require('pug')
 const session = require('express-session')
 const GoogleStrategy = require('passport-google-oauth2').Strategy;
 
-const download = require('./download.js')
-
 const port = process.env.PORT || 3000
 
-const google_api_key = 'AIzaSyDuS3cbDdZ2Jrv2koZaEftyxD6aHcPNUss'
-const google_client_id = '136034564686-g6jvbs2dih9op1jqvs8273f60gg0vp8h.apps.googleusercontent.com'
-const google_client_secret = '7GG4_H7pTDxcXp-IwpGkOyt0'
-const google_callback_url = 'http://127.0.0.1:3000/auth/google/callback'
+const google_api_key = process.env.GOOGLE_API_KEY
+const google_client_id = process.env.GOOGLE_CLIENT_ID
+const google_client_secret = process.env.GOOGLE_CLIENT_SECRET
+const google_callback_url = process.env.GOOGLE_CALLBACK_URL
 
 const index = require('./index')
 const app = express()
@@ -96,23 +95,6 @@ app.get('/auth/google', passport.authenticate('google', {
     'https://www.googleapis.com/auth/youtube'
   ]
 }))
-
-app.post('/download/playlist', (req, res) => {
-  if (req.isAuthenticated()) {
-    let playlist = {
-      name: req.query.name,
-      items: req.body.items
-    }
-
-    download.playlist(playlist, (progress) => {}, () => {
-      res.set('Content-Type', 'text/plain')
-      res.send('Downloads complete')
-    })
-  } else {
-    res.status(401)
-    res.send('Request requires authentication. Please <a href="login">login.</a>')
-  }
-})
 
 app.get('/auth/google/callback', passport.authenticate('google', {
   successRedirect: '/',

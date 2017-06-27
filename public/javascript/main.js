@@ -26,67 +26,6 @@ function onPlayerReady(event) {
   populatePlaylist('PLyATlhF4kiF01VXBmdOFabxrvMkJUwxLU', 'Playlist')
 }
 
-let downloadSong = function () {
-  if(!currentVideo.downloaded) {
-    currentVideo.downloaded = true
-    $('.download-song').attr('class', 'btn btn-warning download-song')
-
-    let body = {
-      items: [
-        {
-          videoId: player.videoId,
-          title: player.videoId
-        }
-      ]
-    }
-
-    fetch('download/playlist?name=singles', {
-      method: 'POST',
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json',
-        'Origin': '127.0.0.1:3000'
-      },
-      body: JSON.stringify(body)
-    })
-    .then((response) => {
-      return response
-    })
-    .then((response) => {
-      $('.download-song').attr('class', 'btn btn-success download-song')
-    })
-    .catch(console.log)
-
-  }
-}
-
-let downloadPlaylist = function() {
-  if(!playlist.downloaded) {
-    playlist.downloaded = true
-    $('.download-button').attr('class', 'btn btn-warning btn-sm download-button')
-    let body = {
-      items: playlist.items
-    }
-    fetch('download/playlist?name=' + playlist.title, {
-      method: 'POST',
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(body)
-    })
-    .then((response) => {
-      return response
-    })
-    .then((response) => {
-      if(response.status == 201) {
-        $('.download-button').attr('class', 'btn btn-success btn-sm download-button')
-      }
-    })
-    .catch(console.log)
-  }
-}
-
 let deleteVideo = function(videoId) {
   fetch('deleteFromPlaylist?id=' + videoId, {
     method: 'DELETE',

@@ -23,14 +23,12 @@
     "cookie-session": "^2.0.0-beta.1",
     "express": "^4.15.2",
     "express-session": "^1.15.2",
-    "fluent-ffmpeg": "^2.1.2",
     "morgan": "^1.8.1",
     "passport": "^0.3.2",
     "passport-google-oauth2": "^0.1.6",
     "pgpromise": "^0.1.1",
     "pug": "^2.0.0-beta.12",
     "request": "^2.81.0",
-    "util": "^0.10.3",
-    "ytdl-core": "^0.13.1"
+    "util": "^0.10.3"
   }
 }
